@@ -15,6 +15,6 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  mockito: ^5.0.0 # Or the latest version
-  build_runner: ^2.0.0 # Use the latest version
-  build_test: ^3.3.3 # Use the latest version
+  mockito: ^5.6.3
+  build_runner: ^2.11.0
+  build_test: ^3.5.6
