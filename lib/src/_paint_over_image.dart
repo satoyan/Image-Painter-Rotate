@@ -53,6 +53,7 @@ class ImagePainter extends StatefulWidget {
     this.onUndo,
     this.onRedo,
     this.onClear,
+    this.onObjectLongPress,
     this.quarterTurns,
     this.contentPadding,
   }) : super(key: key);
@@ -85,6 +86,7 @@ class ImagePainter extends StatefulWidget {
     VoidCallback? onUndo,
     VoidCallback? onRedo,
     VoidCallback? onClear,
+    ValueChanged<PaintInfo>? onObjectLongPress,
     int? quarterTurns,
     EdgeInsets? contentPadding,
   }) {
@@ -115,6 +117,7 @@ class ImagePainter extends StatefulWidget {
       onUndo: onUndo,
       onRedo: onRedo,
       onClear: onClear,
+      onObjectLongPress: onObjectLongPress,
       quarterTurns: quarterTurns,
       contentPadding: contentPadding,
     );
@@ -148,6 +151,7 @@ class ImagePainter extends StatefulWidget {
     VoidCallback? onUndo,
     VoidCallback? onRedo,
     VoidCallback? onClear,
+    ValueChanged<PaintInfo>? onObjectLongPress,
     int? quarterTurns,
     EdgeInsets? contentPadding,
   }) {
@@ -178,6 +182,7 @@ class ImagePainter extends StatefulWidget {
       onUndo: onUndo,
       onRedo: onRedo,
       onClear: onClear,
+      onObjectLongPress: onObjectLongPress,
       quarterTurns: quarterTurns,
       contentPadding: contentPadding,
     );
@@ -211,6 +216,7 @@ class ImagePainter extends StatefulWidget {
     VoidCallback? onUndo,
     VoidCallback? onRedo,
     VoidCallback? onClear,
+    ValueChanged<PaintInfo>? onObjectLongPress,
     int? quarterTurns,
     EdgeInsets? contentPadding,
   }) {
@@ -241,6 +247,7 @@ class ImagePainter extends StatefulWidget {
       onUndo: onUndo,
       onRedo: onRedo,
       onClear: onClear,
+      onObjectLongPress: onObjectLongPress,
       quarterTurns: quarterTurns,
       contentPadding: contentPadding,
     );
@@ -274,6 +281,7 @@ class ImagePainter extends StatefulWidget {
     VoidCallback? onUndo,
     VoidCallback? onRedo,
     VoidCallback? onClear,
+    ValueChanged<PaintInfo>? onObjectLongPress,
     int? quarterTurns,
     EdgeInsets? contentPadding,
   }) {
@@ -304,6 +312,7 @@ class ImagePainter extends StatefulWidget {
       onUndo: onUndo,
       onRedo: onRedo,
       onClear: onClear,
+      onObjectLongPress: onObjectLongPress,
       quarterTurns: quarterTurns,
       contentPadding: contentPadding,
     );
@@ -335,6 +344,7 @@ class ImagePainter extends StatefulWidget {
     VoidCallback? onUndo,
     VoidCallback? onRedo,
     VoidCallback? onClear,
+    ValueChanged<PaintInfo>? onObjectLongPress,
     EdgeInsets? contentPadding,
   }) {
     return ImagePainter._(
@@ -364,9 +374,11 @@ class ImagePainter extends StatefulWidget {
       onUndo: onUndo,
       onRedo: onRedo,
       onClear: onClear,
+      onObjectLongPress: onObjectLongPress,
       contentPadding: contentPadding,
     );
   }
+
 
   /// Class that holds the controller and it's methods.
   final ImagePainterController controller;
@@ -448,6 +460,8 @@ class ImagePainter extends StatefulWidget {
   final VoidCallback? onRedo;
 
   final VoidCallback? onClear;
+
+  final ValueChanged<PaintInfo>? onObjectLongPress;
 
   // The number of clockwise quarter turns only the image should be rotated.
   final int? quarterTurns;
@@ -621,20 +635,32 @@ class ImagePainterState extends State<ImagePainter>
                     child: AnimatedBuilder(
                       animation: _controller,
                       builder: (context, child) {
-                        return InteractiveViewer(
-                          transformationController: _transformationController,
-                          maxScale: 2.4,
-                          minScale: 1,
-                          panEnabled: _controller.mode == PaintMode.none,
-                          scaleEnabled: widget.isScalable!,
-                          onInteractionUpdate: _scaleUpdateGesture,
-                          onInteractionEnd: _scaleEndGesture,
-                          onInteractionStart: _scaleStartGesture,
-                          child: CustomPaint(
-                            size: imageSize,
-                            willChange: true,
-                            isComplex: true,
-                            painter: DrawImage(controller: _controller),
+                        return GestureDetector(
+                          onLongPressStart: (details) {
+                            final _zoomAdjustedOffset =
+                                _transformationController
+                                    .toScene(details.localPosition);
+                            final obj =
+                                _controller.detectObject(_zoomAdjustedOffset);
+                            if (obj != null) {
+                              widget.onObjectLongPress?.call(obj);
+                            }
+                          },
+                          child: InteractiveViewer(
+                            transformationController: _transformationController,
+                            maxScale: 2.4,
+                            minScale: 1,
+                            panEnabled: _controller.mode == PaintMode.none,
+                            scaleEnabled: widget.isScalable!,
+                            onInteractionUpdate: _scaleUpdateGesture,
+                            onInteractionEnd: _scaleEndGesture,
+                            onInteractionStart: _scaleStartGesture,
+                            child: CustomPaint(
+                              size: imageSize,
+                              willChange: true,
+                              isComplex: true,
+                              painter: DrawImage(controller: _controller),
+                            ),
                           ),
                         );
                       },
