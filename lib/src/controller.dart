@@ -105,6 +105,26 @@ class ImagePainterController extends ChangeNotifier {
     notifyListeners();
   }
 
+  void removePaintInfo(PaintInfo paintInfo) {
+    final index = _paintHistory.indexOf(paintInfo);
+    if (index == -1) return;
+    _paintHistory.removeAt(index);
+    _actionHistory.add(RemoveAction(paintInfo, index));
+    _undoActionHistory.clear();
+    notifyListeners();
+  }
+
+  void deleteSelectedObject() {
+    final selected = selectedObject;
+    if (selected != null) {
+      removePaintInfo(selected);
+    }
+  }
+
+  PaintInfo? get selectedObject {
+    return _paintHistory.where((element) => element.selected).firstOrNull;
+  }
+
   void updatePaintInfo(PaintInfo paintInfo) {
     final index = _paintHistory.indexOf(paintInfo);
     if (index != -1) {
