@@ -33,10 +33,11 @@ class ImagePainter extends StatefulWidget {
     this.placeHolder,
     this.isScalable,
     this.brushIcon,
-    this.clearAllIcon,
     this.colorIcon,
     this.undoIcon,
     this.redoIcon,
+    this.clearAllIcon,
+    this.deleteIcon,
     this.isSignature = false,
     this.controlsAtTop = true,
     this.signatureBackgroundColor = Colors.white,
@@ -46,6 +47,7 @@ class ImagePainter extends StatefulWidget {
     this.onPaintModeChanged,
     this.textDelegate,
     this.showControls = true,
+    this.showDeleteMenu = false,
     this.controlsBackgroundColor,
     this.optionSelectedColor,
     this.optionUnselectedColor,
@@ -53,6 +55,7 @@ class ImagePainter extends StatefulWidget {
     this.onUndo,
     this.onRedo,
     this.onClear,
+    this.onDelete,
     this.onObjectLongPress,
     this.quarterTurns,
     this.contentPadding,
@@ -73,12 +76,14 @@ class ImagePainter extends StatefulWidget {
     Widget? redoIcon,
     Widget? clearAllIcon,
     Widget? colorIcon,
+    Widget? deleteIcon,
     ValueChanged<PaintMode>? onPaintModeChanged,
     ValueChanged<Color>? onColorChanged,
     ValueChanged<double>? onStrokeWidthChanged,
     TextDelegate? textDelegate,
     bool? controlsAtTop,
     bool? showControls,
+    bool? showDeleteMenu,
     Color? controlsBackgroundColor,
     Color? selectedColor,
     Color? unselectedColor,
@@ -86,6 +91,7 @@ class ImagePainter extends StatefulWidget {
     VoidCallback? onUndo,
     VoidCallback? onRedo,
     VoidCallback? onClear,
+    VoidCallback? onDelete,
     ValueChanged<PaintInfo>? onObjectLongPress,
     int? quarterTurns,
     EdgeInsets? contentPadding,
@@ -104,12 +110,14 @@ class ImagePainter extends StatefulWidget {
       redoIcon: redoIcon,
       colorIcon: colorIcon,
       clearAllIcon: clearAllIcon,
+      deleteIcon: deleteIcon,
       onPaintModeChanged: onPaintModeChanged,
       onColorChanged: onColorChanged,
       onStrokeWidthChanged: onStrokeWidthChanged,
       textDelegate: textDelegate,
       controlsAtTop: controlsAtTop ?? true,
       showControls: showControls ?? true,
+      showDeleteMenu: showDeleteMenu ?? false,
       controlsBackgroundColor: controlsBackgroundColor,
       optionSelectedColor: selectedColor,
       optionUnselectedColor: unselectedColor,
@@ -117,6 +125,7 @@ class ImagePainter extends StatefulWidget {
       onUndo: onUndo,
       onRedo: onRedo,
       onClear: onClear,
+      onDelete: onDelete,
       onObjectLongPress: onObjectLongPress,
       quarterTurns: quarterTurns,
       contentPadding: contentPadding,
@@ -138,12 +147,14 @@ class ImagePainter extends StatefulWidget {
     Widget? redoIcon,
     Widget? clearAllIcon,
     Widget? colorIcon,
+    Widget? deleteIcon,
     ValueChanged<PaintMode>? onPaintModeChanged,
     ValueChanged<Color>? onColorChanged,
     ValueChanged<double>? onStrokeWidthChanged,
     TextDelegate? textDelegate,
     bool? controlsAtTop,
     bool? showControls,
+    bool? showDeleteMenu,
     Color? controlsBackgroundColor,
     Color? selectedColor,
     Color? unselectedColor,
@@ -151,6 +162,7 @@ class ImagePainter extends StatefulWidget {
     VoidCallback? onUndo,
     VoidCallback? onRedo,
     VoidCallback? onClear,
+    VoidCallback? onDelete,
     ValueChanged<PaintInfo>? onObjectLongPress,
     int? quarterTurns,
     EdgeInsets? contentPadding,
@@ -169,12 +181,14 @@ class ImagePainter extends StatefulWidget {
       redoIcon: redoIcon,
       colorIcon: colorIcon,
       clearAllIcon: clearAllIcon,
+      deleteIcon: deleteIcon,
       onPaintModeChanged: onPaintModeChanged,
       onColorChanged: onColorChanged,
       onStrokeWidthChanged: onStrokeWidthChanged,
       textDelegate: textDelegate,
       controlsAtTop: controlsAtTop ?? true,
       showControls: showControls ?? true,
+      showDeleteMenu: showDeleteMenu ?? false,
       controlsBackgroundColor: controlsBackgroundColor,
       optionSelectedColor: selectedColor,
       optionUnselectedColor: unselectedColor,
@@ -182,6 +196,7 @@ class ImagePainter extends StatefulWidget {
       onUndo: onUndo,
       onRedo: onRedo,
       onClear: onClear,
+      onDelete: onDelete,
       onObjectLongPress: onObjectLongPress,
       quarterTurns: quarterTurns,
       contentPadding: contentPadding,
@@ -203,12 +218,14 @@ class ImagePainter extends StatefulWidget {
     Widget? redoIcon,
     Widget? clearAllIcon,
     Widget? colorIcon,
+    Widget? deleteIcon,
     ValueChanged<PaintMode>? onPaintModeChanged,
     ValueChanged<Color>? onColorChanged,
     ValueChanged<double>? onStrokeWidthChanged,
     TextDelegate? textDelegate,
     bool? controlsAtTop,
     bool? showControls,
+    bool? showDeleteMenu,
     Color? controlsBackgroundColor,
     Color? selectedColor,
     Color? unselectedColor,
@@ -216,6 +233,7 @@ class ImagePainter extends StatefulWidget {
     VoidCallback? onUndo,
     VoidCallback? onRedo,
     VoidCallback? onClear,
+    VoidCallback? onDelete,
     ValueChanged<PaintInfo>? onObjectLongPress,
     int? quarterTurns,
     EdgeInsets? contentPadding,
@@ -234,12 +252,14 @@ class ImagePainter extends StatefulWidget {
       redoIcon: redoIcon,
       colorIcon: colorIcon,
       clearAllIcon: clearAllIcon,
+      deleteIcon: deleteIcon,
       onPaintModeChanged: onPaintModeChanged,
       onColorChanged: onColorChanged,
       onStrokeWidthChanged: onStrokeWidthChanged,
       textDelegate: textDelegate,
       controlsAtTop: controlsAtTop ?? true,
       showControls: showControls ?? true,
+      showDeleteMenu: showDeleteMenu ?? false,
       controlsBackgroundColor: controlsBackgroundColor,
       optionSelectedColor: selectedColor,
       optionUnselectedColor: unselectedColor,
@@ -247,6 +267,7 @@ class ImagePainter extends StatefulWidget {
       onUndo: onUndo,
       onRedo: onRedo,
       onClear: onClear,
+      onDelete: onDelete,
       onObjectLongPress: onObjectLongPress,
       quarterTurns: quarterTurns,
       contentPadding: contentPadding,
@@ -268,12 +289,14 @@ class ImagePainter extends StatefulWidget {
     Widget? redoIcon,
     Widget? clearAllIcon,
     Widget? colorIcon,
+    Widget? deleteIcon,
     ValueChanged<PaintMode>? onPaintModeChanged,
     ValueChanged<Color>? onColorChanged,
     ValueChanged<double>? onStrokeWidthChanged,
     TextDelegate? textDelegate,
     bool? controlsAtTop,
     bool? showControls,
+    bool? showDeleteMenu,
     Color? controlsBackgroundColor,
     Color? selectedColor,
     Color? unselectedColor,
@@ -281,6 +304,7 @@ class ImagePainter extends StatefulWidget {
     VoidCallback? onUndo,
     VoidCallback? onRedo,
     VoidCallback? onClear,
+    VoidCallback? onDelete,
     ValueChanged<PaintInfo>? onObjectLongPress,
     int? quarterTurns,
     EdgeInsets? contentPadding,
@@ -299,12 +323,14 @@ class ImagePainter extends StatefulWidget {
       redoIcon: redoIcon,
       colorIcon: colorIcon,
       clearAllIcon: clearAllIcon,
+      deleteIcon: deleteIcon,
       onPaintModeChanged: onPaintModeChanged,
       onColorChanged: onColorChanged,
       onStrokeWidthChanged: onStrokeWidthChanged,
       textDelegate: textDelegate,
       controlsAtTop: controlsAtTop ?? true,
       showControls: showControls ?? true,
+      showDeleteMenu: showDeleteMenu ?? false,
       controlsBackgroundColor: controlsBackgroundColor,
       optionSelectedColor: selectedColor,
       optionUnselectedColor: unselectedColor,
@@ -312,6 +338,7 @@ class ImagePainter extends StatefulWidget {
       onUndo: onUndo,
       onRedo: onRedo,
       onClear: onClear,
+      onDelete: onDelete,
       onObjectLongPress: onObjectLongPress,
       quarterTurns: quarterTurns,
       contentPadding: contentPadding,
@@ -331,12 +358,14 @@ class ImagePainter extends StatefulWidget {
     Widget? redoIcon,
     Widget? clearAllIcon,
     Widget? colorIcon,
+    Widget? deleteIcon,
     ValueChanged<PaintMode>? onPaintModeChanged,
     ValueChanged<Color>? onColorChanged,
     ValueChanged<double>? onStrokeWidthChanged,
     TextDelegate? textDelegate,
     bool? controlsAtTop,
     bool? showControls,
+    bool? showDeleteMenu,
     Color? controlsBackgroundColor,
     Color? selectedColor,
     Color? unselectedColor,
@@ -344,6 +373,7 @@ class ImagePainter extends StatefulWidget {
     VoidCallback? onUndo,
     VoidCallback? onRedo,
     VoidCallback? onClear,
+    VoidCallback? onDelete,
     ValueChanged<PaintInfo>? onObjectLongPress,
     EdgeInsets? contentPadding,
   }) {
@@ -361,12 +391,14 @@ class ImagePainter extends StatefulWidget {
       redoIcon: redoIcon,
       colorIcon: colorIcon,
       clearAllIcon: clearAllIcon,
+      deleteIcon: deleteIcon,
       onPaintModeChanged: onPaintModeChanged,
       onColorChanged: onColorChanged,
       onStrokeWidthChanged: onStrokeWidthChanged,
       textDelegate: textDelegate,
       controlsAtTop: controlsAtTop ?? true,
       showControls: showControls ?? true,
+      showDeleteMenu: showDeleteMenu ?? false,
       controlsBackgroundColor: controlsBackgroundColor,
       optionSelectedColor: selectedColor,
       optionUnselectedColor: unselectedColor,
@@ -374,11 +406,11 @@ class ImagePainter extends StatefulWidget {
       onUndo: onUndo,
       onRedo: onRedo,
       onClear: onClear,
+      onDelete: onDelete,
       onObjectLongPress: onObjectLongPress,
       contentPadding: contentPadding,
     );
   }
-
 
   /// Class that holds the controller and it's methods.
   final ImagePainterController controller;
@@ -432,6 +464,9 @@ class ImagePainter extends StatefulWidget {
   ///Widget for clearing all actions on control bar.
   final Widget? clearAllIcon;
 
+  ///Widget for deleting selected object on control bar.
+  final Widget? deleteIcon;
+
   ///Define where the controls is located.
   ///`true` represents top.
   final bool controlsAtTop;
@@ -448,6 +483,9 @@ class ImagePainter extends StatefulWidget {
   ///It will control displaying the Control Bar
   final bool showControls;
 
+  ///It will control displaying the Delete Menu
+  final bool showDeleteMenu;
+
   final Color? controlsBackgroundColor;
 
   final Color? optionSelectedColor;
@@ -460,6 +498,8 @@ class ImagePainter extends StatefulWidget {
   final VoidCallback? onRedo;
 
   final VoidCallback? onClear;
+
+  final VoidCallback? onDelete;
 
   final ValueChanged<PaintInfo>? onObjectLongPress;
 
@@ -644,6 +684,9 @@ class ImagePainterState extends State<ImagePainter>
                                 _controller.detectObject(_zoomAdjustedOffset);
                             if (obj != null) {
                               widget.onObjectLongPress?.call(obj);
+                              if (widget.showDeleteMenu) {
+                                _showDeleteMenu(details.globalPosition, obj);
+                              }
                             }
                           },
                           child: InteractiveViewer(
@@ -832,6 +875,35 @@ class ImagePainterState extends State<ImagePainter>
           strokeWidth: _controller.scaledStrokeWidth,
         ),
       );
+
+  Future<void> _showDeleteMenu(Offset globalPosition, PaintInfo obj) async {
+    final RenderBox overlay =
+        Overlay.of(context).context.findRenderObject() as RenderBox;
+    final value = await showMenu<String>(
+      context: context,
+      position: RelativeRect.fromRect(
+        globalPosition & Size.zero,
+        Offset.zero & overlay.size,
+      ),
+      items: [
+        PopupMenuItem(
+          value: 'delete',
+          child: Row(
+            children: [
+              const Icon(Icons.delete, color: Colors.red),
+              const SizedBox(width: 8),
+              Text(textDelegate.delete),
+            ],
+          ),
+        ),
+      ],
+    );
+
+    if (value == 'delete') {
+      widget.onDelete?.call();
+      _controller.removePaintInfo(obj);
+    }
+  }
 
   PopupMenuItem _showOptionsRow() {
     return PopupMenuItem(
