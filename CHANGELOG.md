@@ -1,3 +1,11 @@
+# 1.1.0
+
+- Feat: Support for removing specific drawing objects via a contextual delete menu (triggered by long-press).
+- Feat: Added `removePaintInfo` and `deleteSelectedObject` to `ImagePainterController` with full undo/redo support.
+- Feat: Added `onObjectLongPress` callback to `ImagePainter` for custom object interactions.
+- Chore: Upgraded `devDependencies` (`mockito`, `build_runner`, `build_test`) to their latest compatible versions.
+- Chore: Upgraded environment support to Flutter 3.38.7 and Dart 3.10.3.
+
 # 1.0.4
 
 - Fix: Test errors after fixing lint errors.

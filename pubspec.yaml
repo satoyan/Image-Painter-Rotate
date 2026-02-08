@@ -1,7 +1,6 @@
 name: image_painter_rotate
-description: A flutter package for drawing over images. Supports rotating, color,
-  strokeWidth, different paintModes and exporting image.
-version: 1.0.4
+description: A powerful Flutter widget for painting over images. Supports rotation, shapes, text, undo/redo, object removal, and image export capabilities.
+version: 1.1.0
 homepage: https://github.com/satoyan/yellowQ-Flutter-Image-Painter
 
 environment:
@@ -15,6 +14,6 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  mockito: ^5.0.0 # Or the latest version
-  build_runner: ^2.0.0 # Use the latest version
-  build_test: ^2.0.0 # Use the latest version
+  mockito: ^5.6.3
+  build_runner: ^2.11.0
+  build_test: ^3.5.6

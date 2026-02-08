@@ -40,3 +40,20 @@ class MoveAction extends PaintAction {
     paintInfo.offsets = newOffsets;
   }
 }
+
+class RemoveAction extends PaintAction {
+  final PaintInfo paintInfo;
+  final int index;
+
+  RemoveAction(this.paintInfo, this.index);
+
+  @override
+  void undo(List<PaintInfo> paintHistory) {
+    paintHistory.insert(index, paintInfo);
+  }
+
+  @override
+  void redo(List<PaintInfo> paintHistory) {
+    paintHistory.remove(paintInfo);
+  }
+}

@@ -51,4 +51,7 @@ class DutchTextDelegate implements TextDelegate {
 
   @override
   String get move => "Mode";
+
+  @override
+  String get delete => "Verwijderen";
 }
