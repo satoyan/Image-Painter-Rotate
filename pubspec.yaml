@@ -1,6 +1,6 @@
 name: image_painter_rotate
 description: A powerful Flutter widget for painting over images. Supports rotation, shapes, text, undo/redo, object removal, and image export capabilities.
-version: 1.1.0
+version: 1.1.1
 homepage: https://github.com/satoyan/yellowQ-Flutter-Image-Painter
 
 environment:
