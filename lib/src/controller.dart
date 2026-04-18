@@ -312,7 +312,7 @@ class ImagePainterController extends ChangeNotifier {
     }
     final t = ((point.dx - p1.dx) * dx + (point.dy - p1.dy) * dy) /
         lengthSquared;
-    final clampedT = t.clamp(0.0, 1.0) as double;
+    final clampedT = t.clamp(0.0, 1.0);
     final projection =
         Offset(p1.dx + clampedT * dx, p1.dy + clampedT * dy);
     return (point - projection).distance <= tolerance;
