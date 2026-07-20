@@ -8,6 +8,28 @@ description: Use when the user asks to upgrade Flutter/Dart SDK version for this
 This repo is a **Flutter package** (`project_type: package` in `.metadata`), not an app,
 plus an `example/` app that consumes it via a path dependency. Both need attention.
 
+## 0. Sync with remote and pick the right base branch
+
+**Fetch before branching — don't trust a local `main` that hasn't been updated recently.**
+This repo was renamed (`yellowQ-Flutter-Image-Painter` → `Image-Painter-Rotate`) and its
+default branch changed from `main` to `develop` without local clones being notified. A
+stale local `main` silently missed several commits, including an already-tagged/published
+version bump — work built on top of it collided with a version that was already released.
+
+```bash
+git remote get-url origin                              # confirm it points at the current repo
+gh repo view <owner>/<repo> --json defaultBranchRef     # confirm the actual default branch
+git fetch origin
+```
+
+- Branch from `origin/<default-branch>` (currently `develop`), not from a possibly-stale
+  local `main`.
+- Before bumping `version:` in `pubspec.yaml`, check it isn't already taken:
+  `git tag --list` and `git show origin/<default-branch>:pubspec.yaml | grep version:`.
+  If the version you're about to write already exists, pick the next free one.
+- `main` has branch protection (PR-only, requires a passing `test` status check) — direct
+  `git push` to it will be rejected. `develop` currently has no branch protection.
+
 ## 1. Check current state first
 
 Version info is scattered across several files — read them before changing anything:
@@ -22,7 +44,9 @@ Version info is scattered across several files — read them before changing any
 - `CHANGELOG.md`: top entry often records the last Flutter/Dart bump as a `Chore:` line —
   useful to see what the last upgrade actually changed.
 - `.github/workflows/flutter_test.yaml`: CI installs `channel: 'stable'` with no version
-  pin, so CI always runs against latest stable regardless of local pins.
+  pin, so CI always runs against latest stable regardless of local pins. It only triggers
+  on push/PR **to `main`** — a PR opened against `develop` gets no CI run at all, so don't
+  expect a `test` check to appear there; rely on local `flutter analyze`/`test` instead.
 
 ## 2. Install and switch the target Flutter version
 
@@ -96,3 +120,11 @@ toolchain breakage (Android Gradle/Kotlin, iOS pods) that pure `flutter test` wo
 
 Per `GEMINI.md`: confirm `flutter analyze` passes, `dart format .` produces no diff, and
 all commits are pushed before tagging a release.
+
+- Open the PR against the current default branch (`develop`, see step 0), not `main`.
+  `main` only takes merges via PR from `develop` and won't run this repo's CI for a
+  feature-branch PR anyway.
+- Since PRs into `develop` get no automated `test` check (step 1), treat your local
+  `flutter analyze` / `dart format --set-exit-if-changed` / `flutter test` / example-app
+  build as the actual gate — run them all after any rebase, since rebasing can reintroduce
+  formatting drift from a newer Dart formatter or reorder commits unexpectedly.
