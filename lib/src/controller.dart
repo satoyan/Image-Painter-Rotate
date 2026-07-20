@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
@@ -260,9 +261,15 @@ class ImagePainterController extends ChangeNotifier {
         return _isCircleSelected(item, offset);
       case PaintMode.text:
         return _isTextSelected(item, offset);
+      case PaintMode.freeStyle:
+        return _isFreeStyleSelected(item, offset);
       default:
         return false;
     }
+  }
+
+  double _selectionTolerance(PaintInfo item) {
+    return math.max(16, item.strokeWidth * 2);
   }
 
   bool _isRectSelected(PaintInfo item, Offset offset) {
@@ -273,11 +280,41 @@ class ImagePainterController extends ChangeNotifier {
   bool _isLineSelected(PaintInfo item, Offset offset) {
     final p1 = item.offsets[0]!;
     final p2 = item.offsets[1]!;
-    final distance = ((p2.dx - p1.dx) * (p1.dy - offset.dy) -
-                (p1.dx - offset.dx) * (p2.dy - p1.dy))
-            .abs() /
-        (p2 - p1).distance;
-    return distance < 10;
+    return _isLineSegmentSelected(p1, p2, offset, _selectionTolerance(item));
+  }
+
+  bool _isFreeStyleSelected(PaintInfo item, Offset offset) {
+    final points = item.offsets;
+    final tolerance = _selectionTolerance(item);
+    for (int i = 0; i < points.length - 1; i++) {
+      final current = points[i];
+      final next = points[i + 1];
+      if (current != null && next != null) {
+        if (_isLineSegmentSelected(current, next, offset, tolerance)) {
+          return true;
+        }
+      } else if (current != null && next == null) {
+        if ((offset - current).distance <= tolerance) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  bool _isLineSegmentSelected(
+      Offset p1, Offset p2, Offset point, double tolerance) {
+    final dx = p2.dx - p1.dx;
+    final dy = p2.dy - p1.dy;
+    final lengthSquared = dx * dx + dy * dy;
+    if (lengthSquared == 0) {
+      return (point - p1).distance <= tolerance;
+    }
+    final t =
+        ((point.dx - p1.dx) * dx + (point.dy - p1.dy) * dy) / lengthSquared;
+    final clampedT = t.clamp(0.0, 1.0);
+    final projection = Offset(p1.dx + clampedT * dx, p1.dy + clampedT * dy);
+    return (point - projection).distance <= tolerance;
   }
 
   bool _isCircleSelected(PaintInfo item, Offset offset) {
