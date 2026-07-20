@@ -1,3 +1,7 @@
+# 1.1.2
+
+- Chore: Bumped local dev environment to Flutter 3.44.1 and Dart 3.12.1.
+
 # 1.1.1
 
 - Fix: Corrected move selection hit detection for `line` and `freehand` drawing objects.
