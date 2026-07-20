@@ -1,6 +1,6 @@
 ---
 name: upgrade-flutter
-description: Use when the user asks to upgrade Flutter/Dart SDK version for this project (image_painter_rotate package + example app). Covers version pinning files, pubspec constraints, dependency upgrades, mock regeneration, and verification steps specific to this repo.
+description: Use when the user asks to upgrade Flutter/Dart SDK version for this project (image_painter_rotate package + example app). Covers version pinning files, pubspec constraints, dependency upgrades, mock regeneration, verification steps, branch/PR workflow (develop vs protected main), cutting a release, and post-merge branch cleanup — the full task, not just the SDK bump.
 ---
 
 # Upgrade Flutter for this project
@@ -106,6 +106,16 @@ the project's existing release-prep rule in `GEMINI.md`.
 Optionally sanity-build the example app for platforms you can target
 (`cd example && flutter build apk` / `flutter build ios --no-codesign`) to catch native
 toolchain breakage (Android Gradle/Kotlin, iOS pods) that pure `flutter test` won't catch.
+Expect `flutter build apk` to print warnings if `example/android`'s Gradle/AGP/Kotlin
+versions are below what the new Flutter wants — not fatal, a separate upgrade task. It may
+also auto-edit `example/android/gradle.properties` (Flutter's Kotlin migrator adding
+`android.builtInKotlin` / `android.newDsl` flags) — commit that, it's what a fresh build
+under the new SDK produces.
+
+A newer Dart SDK can also ship a slightly different formatter than whatever last touched
+existing files — after switching versions, run `dart format .` (not just `--set-exit-if-changed`)
+across the whole repo, not only files you edited, and commit any reformatting it does as
+its own `style:` commit.
 
 ## 7. Record the change
 
@@ -128,3 +138,52 @@ all commits are pushed before tagging a release.
   `flutter analyze` / `dart format --set-exit-if-changed` / `flutter test` / example-app
   build as the actual gate — run them all after any rebase, since rebasing can reintroduce
   formatting drift from a newer Dart formatter or reorder commits unexpectedly.
+
+## 9. Merge into develop
+
+Once the PR is `MERGEABLE`/`CLEAN` with no unresolved review comments, merge it — don't
+wait for a CI check that will never appear on a `develop`-targeted PR (step 1). This user
+has confirmed they want PRs merged automatically once verification is clean, without a
+second round of confirmation.
+
+## 10. Cut a release — this is part of "upgrade Flutter", not a separate ask
+
+A Flutter-upgrade task in this repo isn't finished when the PR merges. Immediately follow
+up with a release, per `GEMINI.md`'s release rules:
+
+```bash
+git fetch origin && git checkout develop && git reset --hard origin/develop
+grep "^version:" pubspec.yaml          # confirm it matches what you intend to tag
+head CHANGELOG.md                      # confirm the top entry matches
+git tag -a vX.Y.Z -m vX.Y.Z <commit-or-just-HEAD>
+git push origin vX.Y.Z
+```
+
+Pushing the tag triggers `.github/workflows/release_publish.yaml`: publishes to pub.dev,
+then publishes a matching GitHub release. That workflow now (as of the CI fix below) falls
+back to `gh release create --generate-notes` if no draft release already exists for the
+tag, so a bare `git push origin vX.Y.Z` is sufficient — no need to pre-create a draft.
+Watch the run (`gh run watch <id>`) to confirm both the pub.dev publish and the GitHub
+release step actually succeed, not just that the tag push worked.
+
+## 11. Sync main with develop
+
+`main` lags `develop` and only advances via a `develop` → `main` PR (this repo's own
+pattern — see PR #9, #10, #13). Unlike a `develop`-targeted PR, **this one does trigger
+`flutter_test.yaml`'s required `test` check** (step 1) since it targets `main` — wait for
+that check to go green before merging, then merge same as step 9.
+
+```bash
+gh pr create --base main --head develop --title "sync: merge develop into main"
+gh run watch <run-id>              # wait for the required `test` check
+gh pr merge <pr-number> --merge
+```
+
+## 12. Clean up local branches
+
+```bash
+git fetch origin --prune
+git branch --merged origin/develop     # candidates for `git branch -d`
+git branch -D <finished-feature-branch> <any-temp-backup-branch>
+git branch -f main origin/main         # local main can go stale fast — resync it
+```
