@@ -310,13 +310,13 @@ class ImagePainterController extends ChangeNotifier {
     if (lengthSquared == 0) {
       return (point - p1).distance <= tolerance;
     }
-    final t = ((point.dx - p1.dx) * dx + (point.dy - p1.dy) * dy) /
-        lengthSquared;
+    final t =
+        ((point.dx - p1.dx) * dx + (point.dy - p1.dy) * dy) / lengthSquared;
     final clampedT = t.clamp(0.0, 1.0);
-    final projection =
-        Offset(p1.dx + clampedT * dx, p1.dy + clampedT * dy);
+    final projection = Offset(p1.dx + clampedT * dx, p1.dy + clampedT * dy);
     return (point - projection).distance <= tolerance;
   }
+
   bool _isCircleSelected(PaintInfo item, Offset offset) {
     final center = item.offsets[1]!;
     final radius = (item.offsets[0]! - item.offsets[1]!).distance;

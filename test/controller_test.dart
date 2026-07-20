@@ -120,6 +120,5 @@ void main() {
 
       expect(controller.detectObject(const Offset(20, 10)), dot);
     });
-
   });
 }
