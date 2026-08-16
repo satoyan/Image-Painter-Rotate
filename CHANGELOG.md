@@ -1,3 +1,7 @@
+# 1.1.3
+
+- Fix: Corrected object drag movement on high-resolution/zoomed images by using scene-space delta instead of screen-space focal-point delta.
+
 # 1.1.2
 
 - Chore: Bumped local dev environment to Flutter 3.44.1 and Dart 3.12.1.
