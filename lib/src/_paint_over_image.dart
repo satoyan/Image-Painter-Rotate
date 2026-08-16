@@ -526,7 +526,7 @@ class ImagePainterState extends State<ImagePainter>
   int _strokeMultiplier = 1;
   late TextDelegate textDelegate;
   PaintInfo? _selectedObject;
-  Offset? _initialPanPosition;
+  Offset? _initialPanScenePosition;
   List<Offset?>? _initialOffsets;
 
   @override
@@ -789,7 +789,7 @@ class ImagePainterState extends State<ImagePainter>
       if (_selectedObject == null) {
         _controller.deselectAll();
       } else {
-        _initialPanPosition = onStart.focalPoint;
+        _initialPanScenePosition = _zoomAdjustedOffset;
         _initialOffsets = _selectedObject!.offsets;
       }
     } else {
@@ -804,11 +804,10 @@ class ImagePainterState extends State<ImagePainter>
   void _scaleUpdateGesture(ScaleUpdateDetails onUpdate) {
     if (_controller.mode == PaintMode.move) {
       if (_selectedObject != null) {
-        final delta = onUpdate.focalPoint - _initialPanPosition!;
-        final newOffsets = _initialOffsets!.map((e) {
-          if (e == null) return null;
-          return e + delta;
-        }).toList();
+        final currentScenePosition =
+            _transformationController.toScene(onUpdate.localFocalPoint);
+        final delta = currentScenePosition - _initialPanScenePosition!;
+        final newOffsets = movedOffsetsBySceneDelta(_initialOffsets!, delta);
         _selectedObject!.offsets = newOffsets;
         _controller.updatePaintInfo(_selectedObject!);
       }
@@ -838,7 +837,7 @@ class ImagePainterState extends State<ImagePainter>
         _controller.addMoveAction(_selectedObject!, _initialOffsets!);
       }
       _selectedObject = null;
-      _initialPanPosition = null;
+      _initialPanScenePosition = null;
       _initialOffsets = null;
     } else {
       _controller.setInProgress(false);
@@ -1134,4 +1133,15 @@ class ImagePainterState extends State<ImagePainter>
       ),
     );
   }
+}
+
+@visibleForTesting
+List<Offset?> movedOffsetsBySceneDelta(
+  List<Offset?> offsets,
+  Offset sceneDelta,
+) {
+  return offsets.map((e) {
+    if (e == null) return null;
+    return e + sceneDelta;
+  }).toList();
 }
